@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Guru</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <?!= HtmlService.createHtmlOutputFromFile('css').getContent(); ?>
+</head>
+<body>
+<header id="header">
+  <div class="container-main">
+    <div class="header-container">
+      <h2><i class="fa fa-chalkboard-teacher"></i> Portfolio Guru</h2>
+      <div class="header-right">
+        <div class="dropdown">
+          <button class="dropdown-toggle" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+            Pilih Nama Guru
+          </button>
+          <ul class="dropdown-menu" id="dropdownList" aria-labelledby="dropdownMenu"></ul>
+        </div>
+        <button class="login-btn btn-sm" data-bs-toggle="modal" data-bs-target="#loginModal">
+          <i class="fa fa-sign-in-alt"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="loginBtn">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+<section class="profile">
+    <img src="#" id="profileImage">
+    <div>
+      <h2 id="guruName"></h2>
+      <p id="guruBio"></p>
+    </div>
+</section>
+
+<section class="section" id="experience">
+    <h2>Pengalaman Mengajar</h2>
+    <ul id="experienceList"></ul>
+</section>
+
+<section class="section" id="subjects">
+    <h2>Daftar Pelajaran</h2>
+    <ul id="subjectList"></ul>
+</section>
+
+<section class="section" id="students">
+  <h2>Data Siswa</h2>
+  <div class="table-container">
+    <div class="table-responsive">
+      <table id="studentTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nama Siswa</th>
+            <th>NIS/NISN</th>
+            <th>Gender</th>
+            <th>Kelas</th>
+          </tr>
+        </thead>
+        <tbody id="studentList"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="resources">
+  <h2>File Pembelajaran</h2>
+  <div class="table-responsive">
+    <table id="resourceTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nama File</th>
+          <th>Mata Pelajaran</th>
+          <th>Semester</th>
+          <th>PDF</th>
+        </tr>
+      </thead>
+      <tbody id="resourceList"></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section contact">
+    <h2>Kontak</h2>
+    <form id="contactForm" onsubmit="submitContactForm(event)">
+        <label for="nama" class="mb-2">Nama</label>
+        <input type="text" id="nama" name="nama" placeholder="Masukkan nama Anda" required>
+        <label for="subjek" class="mb-2">Subjek</label>
+        <input type="text" id="subjek" name="subjek" placeholder="Masukkan subjek" required>
+        <label for="pesan" class="mb-2">Pesan</label>
+        <textarea id="pesan" name="pesan" rows="4" placeholder="Tulis pesan Anda" required></textarea>
+        <button type="submit" id="submitButton">Kirim Pesan</button>
+    </form>
+    <div id="notif" style="display: none; margin-top: 10px;"></div>
+ </section>
+</div>
+
+<footer class="footer">
+    <p>&copy; 2025 Portfolio. All Rights Reserved.</p>
+    <div class="social-icons">
+        <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://twitter.com" target="_blank" aria-label="Twitter">
+            <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://instagram.com" target="_blank" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://youtube.com" target="_blank" aria-label="Youtube">
+            <i class="fab fa-youtube"></i>
+        </a>
+        <a href="mailto:email@example.com" aria-label="Email">
+            <i class="fas fa-envelope"></i>
+        </a>
+    </div>
+</footer>
+
+<div id="adminDashboard" style="display: none; padding: 20px;">
+    <button id="sidebarToggle" class="btn btn-dark d-md-none" onclick="toggleSidebar()" style="position: fixed; top: 15px; left: 15px; z-index: 5000;">
+      <i id="toggleIcon" class="fas fa-bars"></i>
+    </button>
+    <nav id="sidebar" class="bg-dark text-white p-3">
+        <div id="profileSidebar" class="text-center mb-4">
+            <img id="profileImageGuru" src="" alt="Foto Guru" class="img-fluid rounded-circle mb-2" style="width: 80px; height: 80px; object-fit: cover;">
+            <h6 id="profileName"></h6>
+        </div>
+        <ul class="nav flex-column mt-4">
+            <li class="nav-item">
+                <a href="#" class="nav-link text-white menu-item" onclick="showSection('overview')">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link text-white menu-item" onclick="showSection('portfolio')">
+                    <i class="fas fa-briefcase"></i> Portfolio
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link text-white menu-item" onclick="showSection('pengalaman')">
+                    <i class="fas fa-chalkboard-teacher"></i> Pengalaman
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link text-white menu-item" onclick="showSection('pelajaran')">
+                    <i class="fas fa-book"></i> Mata Pelajaran
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link text-white menu-item" onclick="showSection('dataSiswa')">
+                    <i class="fas fa-users"></i> Data Siswa
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link text-white menu-item" onclick="showSection('administrasi')">
+                    <i class="fas fa-folder-open"></i> Administrasi
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link text-white menu-item" onclick="showSection('kontak')">
+                    <i class="fas fa-envelope"></i> Kontak
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link text-white menu-item" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+          </li>
+      </ul>
+  </nav>
+
+<div id="overlay" onclick="toggleSidebar()"></div> <span style="margin-left:50px;font-weight:bold">PORTFOLIO GURU</span>
+  <div id="mainContent">
+   <div id="overview" class="content-section">
+    <h3>Dashboard</h3>
+    <p>Selamat datang di Dashboard Admin!</p>
+    <div class="row mt-4">
+    <div class="col-12 col-sm-6 col-md-3 mb-3">
+        <div class="card text-bg-primary shadow text-center">
+            <div class="card-body">
+                <i class="fa fa-briefcase fa-2x mb-3"></i>
+                <h5 class="card-title">Total Pengalaman</h5>
+                <p class="card-text fs-4" id="totalPengalaman">0</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-3 mb-3">
+        <div class="card text-bg-success shadow text-center">
+            <div class="card-body">
+                <i class="fa fa-book fa-2x mb-3"></i>
+                <h5 class="card-title">Total Pelajaran</h5>
+                <p class="card-text fs-4" id="totalMapel">0</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-3 mb-3">
+        <div class="card text-bg-warning shadow text-center">
+            <div class="card-body">
+                <i class="fa fa-users fa-2x mb-3"></i>
+                <h5 class="card-title">Total Data Siswa</h5>
+                <p class="card-text fs-4" id="totalSiswa">0</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-3 mb-3">
+        <div class="card text-bg-danger shadow text-center">
+            <div class="card-body">
+                <i class="fa fa-folder-open fa-2x mb-3"></i>
+                <h5 class="card-title">Total Administrasi</h5>
+                <p class="card-text fs-4" id="totalAdministrasi">0</p>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div id="portfolio" class="content-section" style="display: none;">
+      <h2>Portfolio</h2>
+              <div class="table-responsive">
+                  <table class="table table-bordered table-striped" id="tabelPortfolio">
+                      <thead>
+                          <tr>
+                              <th>Foto Guru</th>
+                              <th>Nama Guru</th>
+                              <th>NIP</th>
+                              <th>Aksi</th>
+                          </tr>
+                      </thead>
+                  <tbody></tbody>
+              </table>
+        </div>
+   </div>
+
+  <div class="modal fade" id="editModalPortfolio" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+            <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="editModalLabel">Edit Data Guru</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                      <form id="editForm">
+                          <div class="mb-3">
+                              <label for="editNama" class="form-label">Nama Guru</label>
+                              <input type="text" class="form-control" id="editNama" required>
+                          </div>
+                          <div class="mb-3">
+                              <label for="editNIP" class="form-label">NIP</label>
+                              <input type="text" class="form-control" id="editNIP" required>
+                          </div>
+                          <div class="mb-3">
+                              <label for="editFoto" class="form-label">Foto (opsional)</label>
+                              <input type="file" class="form-control" id="editFoto" accept="image/*">
+                          </div>
+                          <button type="button" class="btn btn-primary" id="saveEditBtn">Update</button>
+                    </form>
+              </div>
+          </div>
+     </div>
+</div>
+
+<div id="pengalaman" class="content-section" style="display: none;">
+    <h3>Pengalaman Mengajar</h3>
+    <button class="btn btn-success btn-sm mt-2" onclick="showAddPengalaman()"><i class="fa fa-user-plus"></i> Tambah</button>
+    <div class="table-responsive mt-4">
+        <table id="tabelPengalamanGuru" class="table table-bordered table-striped">
+            <thead class="table">
+                <tr>
+                    <th>No</th>
+                    <th>Pengalaman</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="addModalPengalaman" tabindex="-1" aria-labelledby="addPengalamanLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPengalamanLabel">Tambah Pengalaman</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addFormPengalaman">
+                    <div class="mb-3">
+                        <label for="addPengalamanText" class="form-label">Pengalaman</label>
+                        <textarea id="addPengalamanText" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3" hidden>
+                        <label for="addNamaGuru" class="form-label">Nama Guru</label>
+                        <input type="text" id="addNamaGuru" class="form-control" readonly>
+                    </div>
+                    <button type="button" id="saveAddPengalaman" class="btn btn-primary">Simpan</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="editModalPengalaman" tabindex="-1" aria-labelledby="editPengalamanLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPengalamanLabel">Edit Pengalaman</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editFormPengalaman">
+                    <input type="hidden" id="editRowIndex">
+                    <div class="mb-3">
+                        <label for="editPengalamanText" class="form-label">Pengalaman</label>
+                        <textarea id="editPengalamanText" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <button type="button" id="saveEditPengalaman" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="pelajaran" class="content-section" style="display: none;">
+    <h3>Mata Pelajaran</h3>
+    <button class="btn btn-success btn-sm mt-2" id="btnTambahMapel">
+        <i class="fa fa-user-plus"></i> Tambah
+    </button>
+    <div class="table-responsive mt-4">
+        <table id="tableMapel" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Daftar Pelajaran</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="mapelModal" tabindex="-1" aria-labelledby="mapelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="mapelModalLabel">Tambah Mata Pelajaran</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="rowIndex">
+                <div class="mb-3">
+                    <label for="mapelInput" class="form-label">Nama Pelajaran</label>
+                    <input type="text" class="form-control" id="mapelInput" required>
+                </div>
+                <div class="mb-3" hidden>
+                  <label for="namaGuruInput" class="form-label">Nama Guru</label>
+                  <input type="text" class="form-control" id="namaGuruInput" readonly>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveMapel">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+  <div id="dataSiswa" class="content-section" style="display: none;">
+    <h3>Data Siswa</h3>
+    <button class="btn btn-success btn-sm mt-2" onclick="showAddSiswa()"> <i class="fa fa-user-plus"></i> Tambah</button>
+    <div class="table-responsive mt-3">
+        <table id="tableSiswa" class="table table-bordered table-striped">
+            <thead class="table">
+                <tr>
+                    <th>No</th>
+                    <th>Nama Siswa</th>
+                    <th>NIS/NISN</th>
+                    <th>Gender</th>
+                    <th>Kelas</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="addModalSiswa" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Tambah Siswa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="addNamaSiswa" class="form-label">Nama Siswa</label>
+                    <input type="text" class="form-control" id="addNamaSiswa" required>
+                </div>
+                <div class="mb-3">
+                    <label for="addNIS" class="form-label">NIS/NISN</label>
+                    <input type="text" class="form-control" id="addNIS" required>
+                </div>
+                <div class="mb-3">
+                    <label for="addGender" class="form-label">Gender</label>
+                    <select class="form-select" id="addGender" required>
+                        <option value="">Pilih Gender</option>
+                        <option value="Laki-laki">Laki-laki</option>
+                        <option value="Perempuan">Perempuan</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="addKelas" class="form-label">Kelas</label>
+                    <input type="text" class="form-control" id="addKelas" required>
+                </div>
+                 <div class="mb-3" hidden>
+                    <label for="addGuruSiswa" class="form-label">Nama Guru</label>
+                    <input type="text" class="form-control" id="addGuruSiswa" readonly>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="saveAddSiswaBtn">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editModalSiswa" tabindex="-1" aria-labelledby="editModalSiswaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalSiswaLabel">Edit Data Siswa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editSiswaForm">
+                    <input type="hidden" id="editId">
+                    <div class="mb-3">
+                        <label for="editNamaSiswa" class="form-label">Nama Siswa</label>
+                        <input type="text" class="form-control" id="editNamaSiswa" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editNIS" class="form-label">NIS/NISN</label>
+                        <input type="text" class="form-control" id="editNIS" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editGender" class="form-label">Gender</label>
+                        <select class="form-control" id="editGender" required>
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editKelas" class="form-label">Kelas</label>
+                        <input type="text" class="form-control" id="editKelas" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="saveEditSiswaBtn">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+          
+<div id="administrasi" class="content-section" style="display: none;">
+    <h3>Administrasi</h3>
+    <button class="btn btn-success btn-sm mt-2" onclick="showAddAdministrasi()"><i class="fa fa-user-plus"></i> Tambah</button>
+    <div class="table-responsive mt-3">
+    <table id="tableAdministrasi" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Nama File</th>
+                <th>Mata Pelajaran</th>
+                <th>Semester</th>
+                <th>File</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal fade" id="adminModal" tabindex="-1" aria-labelledby="adminModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminModalLabel">Tambah/Edit Administrasi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="adminRowIndex">
+                <div class="mb-3">
+                    <label for="adminNamaFile" class="form-label">Nama File</label>
+                    <input type="text" class="form-control" id="adminNamaFile" required>
+                </div>
+                <div class="mb-3">
+                    <label for="adminMapel" class="form-label">Mata Pelajaran</label>
+                    <input type="text" class="form-control" id="adminMapel" required>
+                </div>
+                <div class="mb-3">
+                    <label for="adminSemester" class="form-label">Semester</label>
+                    <select class="form-select" id="adminSemester" required>
+                        <option value="Ganjil">Ganjil</option>
+                        <option value="Genap">Genap</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                  <label for="adminFile" class="form-label">Upload File</label>
+                   <small class="text-muted">(Maks. 5MB)</small>
+                  <input type="file" class="form-control" id="adminFile" 
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" required>
+                </div>
+                 <div class="mb-3">
+                  <label for="adminStatus" class="form-label">Status</label>
+                  <select class="form-select" id="adminStatus" required>
+                      <option value="Aktif">Aktif</option>
+                      <option value="Non Aktif">Non Aktif</option>
+                  </select>
+               </div>
+                <div class="mb-3" hidden> 
+                    <label for="adminGuru" class="form-label">Nama Guru</label> 
+                    <input type="text" class="form-control" id="adminGuru" readonly> 
+                </div> 
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="saveAdminBtn">Simpan</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div id="kontak" class="content-section" style="display: none;">
+    <h3>Kontak</h3>
+    <table id="kontakTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Subjek</th>
+                <th>Pesan</th>
+                <th>Timestamp</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<footer class="footer-admin mt-auto bg-light">
+    <span class="text-muted float-start">© 2024 JNC Edukasi. All rights reserved.</span>
+</footer>
+</div>
+</div>
+</div>
+
+<script>
+  function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const icon = document.getElementById('toggleIcon');
+        if (sidebar.style.transform === 'translateX(0px)') {
+            sidebar.style.transform = 'translateX(-100%)';
+            overlay.style.display = 'none';
+            icon.className = 'fas fa-bars';
+        } else {
+            sidebar.style.transform = 'translateX(0px)';
+            overlay.style.display = 'block';
+            icon.className = 'fas fa-times';
+        }
+    }
+
+  function showSection(sectionId) {
+    const sections = document.querySelectorAll('.content-section');
+    sections.forEach(section => section.style.display = 'none');
+    document.getElementById(sectionId).style.display = 'block';
+    switch (sectionId) {
+        case 'overview':
+            loadDashboard();
+            break;
+        case 'portfolio':
+            loadPortfolio();
+            break;
+        case 'pengalaman':
+            loadPengalaman();
+            break;
+        case 'pelajaran':
+            loadPelajaran();
+            break;
+        case 'dataSiswa':
+            loadSiswa();
+            break;
+        case 'administrasi':
+            loadAdministrasi();
+            break;
+        case 'kontak':
+            loadKontak();
+            break;
+    }
+    if (window.innerWidth < 768) toggleSidebar();
+  }
+
+    window.addEventListener('load', () => {
+        if (window.innerWidth >= 768) {
+            document.getElementById('sidebar').style.transform = 'translateX(0)';
+        }
+  });
+
+function loadDashboard() {
+    loadDashboardStats(); 
+}
+
+function loadDashboardStats() {
+    const namaGuru = localStorage.getItem("namaGuru");
+    if (!namaGuru) return;
+    google.script.run.withSuccessHandler(function (stats) {
+        document.getElementById('totalPengalaman').textContent = stats.pengalaman;
+        document.getElementById('totalMapel').textContent = stats.mapel;
+        document.getElementById('totalSiswa').textContent = stats.siswa;
+        document.getElementById('totalAdministrasi').textContent = stats.administrasi;
+    }).getDashboardStats(namaGuru);
+}
+
+function loadGuruProfile() {
+    const namaGuru = localStorage.getItem("namaGuru");
+    if (!namaGuru) return;
+    google.script.run.withSuccessHandler(function (data) {
+        if (data) {
+            document.getElementById('profileImageGuru').src = data.foto;
+            document.getElementById('profileName').textContent = data.nama;
+        }
+    }).getGuruData(namaGuru);
+}
+
+function loadDropdown() {
+  google.script.run.withSuccessHandler(function(data) {
+    const dropdown = document.querySelector('.dropdown');
+    const dropdownList = document.getElementById('dropdownList');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    if (data.length === 1) {
+      // 
+      dropdown.style.display = 'none';
+      dropdownMenu.insertAdjacentHTML('beforebegin', `<span>${data[0]}</span>`);
+      selectGuru(encodeURIComponent(data[0]));
+    } else if (data.length > 1) {
+      //
+      dropdown.style.display = 'inline-block';
+      dropdownList.innerHTML = data.map(item =>
+        `<li><a class="dropdown-item" href="#" onclick="selectGuru('${encodeURIComponent(item)}')">${item}</a></li>`
+      ).join('');
+    }
+  }).getDropdownData();
+}
+
+function selectGuru(nama) {
+  nama = decodeURIComponent(nama);
+  if (!nama) {
+    Swal.fire("Error!", "Nama guru tidak ditemukan!", "error");
+    return;
+  }
+  localStorage.setItem('selectedGuru', nama);
+  google.script.run.withSuccessHandler(function(data) {
+    if (data) {
+      updateGuruProfile(data);
+      loadPengalaman(nama);
+    } else {
+      Swal.fire("Error!", "Data guru tidak ditemukan!", "error");
+    }
+  }).getGuruData(nama);
+}
+
+function updateGuruProfile(data) {
+  document.getElementById('profileImage').src = data.foto;
+  document.getElementById('guruName').textContent = data.nama;
+  document.getElementById('guruBio').textContent = "NIP: " + data.nip;
+}
+
+ document.addEventListener('DOMContentLoaded', function() {
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+  const selectedGuru = localStorage.getItem("selectedGuru"); 
+
+  if (isLoggedIn === "true") {
+    document.querySelector(".container").style.display = "none";
+    document.querySelector(".footer").style.display = "none";
+    document.getElementById("header").style.display = "none";
+    document.getElementById("adminDashboard").style.display = "block";
+    loadGuruProfile();
+  } else {
+    document.querySelector(".container").style.display = "block";
+    document.querySelector(".footer").style.display = "block";
+    document.getElementById("header").style.display = "block";
+    document.getElementById("adminDashboard").style.display = "none";
+  }
+
+  loadDashboardStats();
+  loadGuruProfile();
+  const observer = new MutationObserver(() => {
+    const namaGuru = localStorage.getItem('selectedGuru');
+    if (namaGuru) {
+      loadPengalaman(namaGuru);
+      loadPelajaran(namaGuru);
+      loadSiswa(namaGuru);
+      loadResources(namaGuru);
+    }
+  });
+
+  const savedGuru = localStorage.getItem('selectedGuru');
+  if (savedGuru) {
+    google.script.run.withSuccessHandler(updateGuruProfile).getGuruData(savedGuru);
+    loadPengalaman(savedGuru);
+    loadPelajaran(savedGuru);
+    loadSiswa(savedGuru);
+    loadResources(savedGuru);
+  }
+  loadDropdown();
+
+  observer.observe(document.getElementById('guruName'), { childList: true });
+  loadMapel();
+  loadSiswa();
+  loadAdministrasi();
+  loadKontak();
+  loadPortfolio();
+  document.getElementById("saveEditBtn").addEventListener("click", saveEdit);
+    function displayIdentitas(data) {
+      if (data.length > 0) {
+        document.getElementById('profileImage').src = data[0].foto;
+        document.getElementById('guruName').textContent = data[0].nama;
+        document.getElementById('guruBio').textContent = `NIP: ${data[0].nip}`;
+      }
+    }
+
+function loadPengalaman(namaGuru) {
+   if (!namaGuru) return;
+  google.script.run.withSuccessHandler(displayPengalaman).getPengalamanGuru(namaGuru);
+}
+
+function displayPengalaman(data) {
+  const experienceList = document.getElementById('experienceList');
+  experienceList.innerHTML = '';
+  if (!data || data.length === 0) {
+    experienceList.innerHTML = '<p>Belum ada pengalaman mengajar.</p>';
+    return;
+  }
+  data.forEach(item => {
+    const experienceItem = `
+      <div class="experience-item">
+        ${item.idPeng}. ${item.deskripsi}
+      </div>`;
+    experienceList.innerHTML += experienceItem;
+  });
+}
+
+function loadPelajaran(namaGuru) {
+  if (!namaGuru) return;
+  google.script.run.withSuccessHandler(displayPelajaran).getPelajaran(namaGuru);
+}
+
+function displayPelajaran(data) {
+  const subjectList = document.getElementById('subjectList');
+  subjectList.innerHTML = '';
+  if (!data || data.length === 0) {
+    subjectList.innerHTML = '<p>Belum ada pelajaran yang tersedia.</p>';
+    return;
+  }
+  data.sort((a, b) => a.idPel - b.idPel);
+  data.forEach((item, index) => {
+    const li = document.createElement('li');
+    li.textContent = `${index + 1}. ${item.keterangan}`; 
+    subjectList.appendChild(li);
+  });
+}
+
+function loadSiswa(namaGuru) {
+  if (!namaGuru) return;
+  google.script.run.withSuccessHandler(displaySiswa).getSiswa(namaGuru);
+}
+
+function displaySiswa(data) { 
+  const studentList = document.getElementById('studentList');
+  studentList.innerHTML = '';
+
+  if (data.length === 0) {
+    studentList.innerHTML = `<tr><td colspan="5">Belum ada data siswa untuk guru ini.</td></tr>`;
+    return;
+  }
+
+  data.forEach((item, index) => {
+    const row = `
+      <tr>
+        <td>${index + 1}</td> 
+        <td>${item.nama}</td>
+        <td>${item.nis}</td>
+        <td>${item.gender}</td>
+        <td>${item.kelas}</td>
+      </tr>`;
+    studentList.innerHTML += row;
+  });
+}
+
+function loadResources(namaGuru) {
+  if (!namaGuru) return;
+  google.script.run.withSuccessHandler(displayResources).getResources(namaGuru);
+}
+
+function displayResources(data) {
+  const resourceList = document.getElementById('resourceList');
+  resourceList.innerHTML = '';
+  if (data.length === 0) {
+    resourceList.innerHTML = `<tr><td colspan="5">Belum ada file pembelajaran untuk guru ini.</td></tr>`;
+    return;
+  }
+  data.forEach(item => {
+    const row = `
+      <tr>
+        <td>${item.no}</td>
+        <td>${item.nama}</td>
+        <td>${item.mapel}</td>
+        <td>${item.semester}</td>
+        <td>
+          <a href="${item.url}" target="_blank" class="download-icon" title="Download">
+            <i class="fa fa-file-pdf"></i>
+          </a>
+        </td>
+      </tr>`;
+    resourceList.innerHTML += row;
+  });
+ }
+});
+
+  function submitContactForm(event) {
+        event.preventDefault();
+        const nama = document.getElementById('nama').value.trim();
+        const subjek = document.getElementById('subjek').value.trim();
+        const pesan = document.getElementById('pesan').value.trim();
+        const notif = document.getElementById('notif');
+        const submitButton = document.getElementById('submitButton');
+
+        if (!nama || !subjek || !pesan) {
+            notif.textContent = 'Semua kolom wajib diisi!';
+            notif.style.backgroundColor = '#f8d7da';
+            notif.style.display = 'block';
+            return;
+        }
+
+        submitButton.textContent = 'Mengirim...';
+        submitButton.disabled = true;
+        google.script.run.withSuccessHandler(function() {
+            notif.textContent = 'Pesan berhasil dikirim!';
+            notif.style.backgroundColor = '#d4edda';
+            notif.style.display = 'block';
+            document.getElementById('contactForm').reset();
+            submitButton.textContent = 'Kirim Pesan';
+            submitButton.disabled = false;
+            setTimeout(() => notif.style.display = 'none', 3000);
+        }).saveContactData(nama, subjek, pesan);
+    }
+
+   let lastScrollY = window.scrollY;
+        const header = document.getElementById("header");
+        window.addEventListener("scroll", () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY && currentScrollY > 50) {
+                header.classList.add("hide"); 
+            } else {
+                header.classList.remove("hide"); 
+            }
+        lastScrollY = currentScrollY; 
+    });
+
+ document.getElementById("loginForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const loginBtn = document.getElementById("loginBtn");
+    loginBtn.textContent = "Memproses...";
+    loginBtn.disabled = true;
+    google.script.run.withSuccessHandler(function (users) {
+        const user = users.find(user => user.username === username && user.password === password);
+        if (user) {
+            localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("namaGuru", user.namaLengkap);
+            document.querySelector(".container").style.display = "none";
+            document.querySelector(".footer").style.display = "none";
+            document.getElementById("header").style.display = "none";
+            document.getElementById("adminDashboard").style.display = "block";
+            const loginModal = bootstrap.Modal.getInstance(document.getElementById("loginModal"));
+            loginModal.hide();
+            Swal.fire({
+                title: "Login Berhasil!",
+                icon: "success",
+                timer: 2000,
+                showConfirmButton: false
+            });
+            loadGuruProfile();
+            loadPortfolio();
+            loadPengalaman();
+            loadMapel();
+            loadSiswa();
+            loadAdministrasi();
+            updateNamaGuruInput();
+        } else {
+            Swal.fire({
+                text: "Username atau password salah.",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+            loginBtn.textContent = "Login";
+            loginBtn.disabled = false;
+        }
+    }).getLoginData();
+});
+
+function updateNamaGuruInput() {
+    const namaGuru = localStorage.getItem("namaGuru") || "";
+    const namaGuruInput = document.getElementById("addNamaGuru");
+    const guruInput = document.getElementById('addGuruSiswa');
+    const adminGuruInput = document.getElementById('adminGuru');
+    if (namaGuruInput) namaGuruInput.value = namaGuru;
+    if (guruInput) guruInput.value = namaGuru;
+    if (adminGuruInput) adminGuruInput.value = namaGuru;
+}
+
+
+window.onload = function () {
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    if (isLoggedIn === "true") {
+        document.querySelector(".container").style.display = "none";
+        document.querySelector(".footer").style.display = "none";
+        document.getElementById("header").style.display = "none";
+        document.getElementById("adminDashboard").style.display = "block";
+        updateNamaGuruInput();
+    }
+};
+
+function logout() {
+    Swal.fire({
+        title: "Yakin ingin logout?",
+        showCancelButton: true,
+        confirmButtonText: "Logout",
+        cancelButtonText: "Cancel",
+        reverseButtons: true,
+        timerProgressBar: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("namaGuru");
+            document.querySelector(".container").style.display = "block";
+            document.querySelector(".footer").style.display = "block";
+            document.getElementById("header").style.display = "block";
+            document.getElementById("adminDashboard").style.display = "none";
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+            const loginBtn = document.getElementById("loginBtn");
+            if (loginBtn) {
+                loginBtn.textContent = "Login";
+                loginBtn.disabled = false;
+            }
+            Swal.fire({
+                title: "Logout berhasil!",
+                icon: "success",
+                timer: 2000,
+                showConfirmButton: false,
+                timerProgressBar: false
+            });
+        }
+    });
+}
+
+ function loadPortfolio() {
+    const namaGuru = localStorage.getItem("namaGuru"); 
+    google.script.run.withSuccessHandler(function (data) {
+        const tableBody = document.querySelector("#tabelPortfolio tbody");
+        tableBody.innerHTML = "";
+        const filteredData = data.filter(row => row[1] === namaGuru);
+        if (filteredData.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='4' class='text-center'>Tidak ada data</td></tr>";
+            return;
+        }
+        filteredData.forEach((row, index) => {
+            const imageUrl = convertDriveUrl(row[0]);
+            const nama = row[1];
+            const nip = row[2];
+            const newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td><img src="${imageUrl}" alt="Foto" class="img-thumbnail" width="80"></td>
+                <td>${nama}</td>
+                <td>${nip}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editRow(${index}, '${nama}', '${nip}')"><i class="fa fa-pen"></i></button>
+                </td>`;
+            tableBody.appendChild(newRow);
+        });
+    }).getPortfolioData();
+ }
+
+  function convertDriveUrl(driveUrl) {
+    const match = driveUrl.match(/\/d\/(.*)\/view/);
+    return match ? `https://drive.google.com/thumbnail?export=view&id=${match[1]}` : driveUrl;
+  }
+
+  function editRow(index) {
+    const row = document.querySelector(`#tabelPortfolio tbody tr:nth-child(${index + 1})`);
+    const nama = row.children[1].textContent;
+    const nip = row.children[2].textContent;
+    document.getElementById("editNama").value = nama;
+    document.getElementById("editNIP").value = nip;
+    document.getElementById("saveEditBtn").setAttribute("data-index", index);
+    const editModal = new bootstrap.Modal(document.getElementById("editModalPortfolio"));
+    editModal.show();
+}
+
+function saveEdit() {
+    const saveButton = document.getElementById("saveEditBtn");
+    const index = saveButton.getAttribute("data-index");
+    const namaBaru = document.getElementById("editNama").value.trim();
+    const nipBaru = document.getElementById("editNIP").value.trim();
+    const fileInput = document.getElementById("editFoto").files[0];
+    if (!namaBaru || !nipBaru) {
+        Swal.fire("Error", "Nama dan NIP harus diisi!", "error");
+        return;
+    }
+
+    saveButton.innerText = "Updating...";
+    saveButton.disabled = true;
+    const selectedRow = document.querySelector(`#tabelPortfolio tbody tr:nth-child(${+index + 1})`);
+    const namaLama = selectedRow.children[1].textContent;
+    const gambarLama = selectedRow.children[0].querySelector("img").getAttribute("src");
+
+    if (fileInput) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const imageBase64 = e.target.result.split(",")[1]; 
+            sendEditData(namaLama, namaBaru, nipBaru, imageBase64);
+        };
+        reader.readAsDataURL(fileInput);
+    } else {
+        sendEditData(namaLama, namaBaru, nipBaru, null);
+    }
+}
+
+function sendEditData(namaLama, namaBaru, nipBaru, imageBase64) {
+    google.script.run.withSuccessHandler(function (response) {
+        Swal.fire({
+            title: "Berhasil!",
+            text: response,
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: false
+        });
+        resetEditForm();
+        const saveButton = document.getElementById("saveEditBtn");
+        saveButton.innerText = "Update";
+        saveButton.disabled = false;
+        const editModal = bootstrap.Modal.getInstance(document.getElementById("editModalPortfolio"));
+        editModal.hide();
+        loadPortfolio();
+    }).updatePortfolioWithImage(namaLama, namaBaru, nipBaru, imageBase64);
+}
+
+function resetEditForm() {
+    document.getElementById("editNama").value = "";
+    document.getElementById("editNIP").value = "";
+    document.getElementById("editFoto").value = "";
+}
+
+function showAddPengalaman() {
+    document.getElementById('addPengalamanText').value = '';
+    const modal = new bootstrap.Modal(document.getElementById('addModalPengalaman'));
+    modal.show();
+}
+
+document.getElementById('saveAddPengalaman').addEventListener('click', function () {
+    const btn = this;
+    const pengalaman = document.getElementById('addPengalamanText').value.trim();
+    const namaGuru = localStorage.getItem("namaGuru") || "Tidak Diketahui";
+    if (pengalaman !== '') {
+        btn.innerHTML = 'Menyimpan...';
+        btn.disabled = true;
+        google.script.run.withSuccessHandler(function (response) {
+            Swal.fire('Sukses!', response, 'success');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addModalPengalaman'));
+            modal.hide();
+            document.getElementById('addPengalamanText').value = '';
+            loadPengalaman(); 
+            btn.innerHTML = 'Simpan';
+            btn.disabled = false;
+        }).addPengalaman(pengalaman, namaGuru);
+    } else {
+        Swal.fire('Oops!', 'Field pengalaman tidak boleh kosong.', 'error');
+    }
+});
+
+function loadPengalaman() {
+    const namaLengkap = localStorage.getItem("namaGuru");
+    google.script.run.withSuccessHandler(function (data) {
+        const tbody = document.querySelector('#tabelPengalamanGuru tbody');
+        tbody.innerHTML = '';
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" class="text-center">Tidak ada pengalaman</td></tr>`;
+            return;
+        }
+        data.forEach((item, index) => {
+            const id = item[0]; 
+            const pengalaman = item[1];
+            const row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${pengalaman}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="showEditPengalaman(${id}, '${pengalaman}')"><i class="fa fa-pen"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="deletePengalaman(${id})"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            tbody.innerHTML += row;
+        });
+    }).getPengalamanByNama(namaLengkap);
+}
+
+function showEditPengalaman(id, pengalaman) {
+    document.getElementById('editRowIndex').value = id; 
+    document.getElementById('editPengalamanText').value = pengalaman;
+    const modal = new bootstrap.Modal(document.getElementById('editModalPengalaman'));
+    modal.show();
+}
+
+document.getElementById('saveEditPengalaman').addEventListener('click', function () {
+    const btn = this; 
+    const id = document.getElementById('editRowIndex').value; 
+    const pengalaman = document.getElementById('editPengalamanText').value.trim();
+    if (pengalaman !== '') {
+        btn.innerHTML = 'Updating...';
+        btn.disabled = true;
+        google.script.run.withSuccessHandler(function (response) {
+            Swal.fire('Sukses!', response, 'success');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editModalPengalaman'));
+            modal.hide();
+            loadPengalaman(); 
+            btn.innerHTML = 'Update';
+            btn.disabled = false;
+        }).updatePengalaman(Number(id), pengalaman);
+    } else {
+        Swal.fire('Oops!', 'Field pengalaman tidak boleh kosong.', 'error');
+    }
+});
+
+function deletePengalaman(id) {
+    Swal.fire({
+        title: 'Yakin ingin menghapus data?',
+        showCancelButton: true,
+        confirmButtonText: 'Hapus',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            google.script.run.withSuccessHandler(function (response) {
+                Swal.fire('Dihapus!', response, 'success');
+                loadPengalaman(); 
+            }).deletePengalaman(id);
+        }
+    });
+}
+
+function showSuccessMessage(message) {
+    const mapelModal = bootstrap.Modal.getInstance(document.getElementById('mapelModal'));
+    mapelModal.hide();
+    Swal.fire('Berhasil!', message, 'success');
+}
+
+function loadMapel() {
+    const tableBody = document.querySelector('#tableMapel tbody');
+    tableBody.innerHTML = '<tr><td colspan="3">Memuat data...</td></tr>';
+    const namaGuru = localStorage.getItem("namaGuru");
+    google.script.run.withSuccessHandler(function (data) {
+        tableBody.innerHTML = '';
+        if (data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="3">Tidak ada data mata pelajaran.</td></tr>';
+            return;
+        }
+        data.forEach((item, index) => {
+            const row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.mapel}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editMapel(${item.id}, '${item.mapel}')"><i class="fa fa-pen"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteMapel(${item.id})"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }).getMapelByGuru(namaGuru);
+}
+
+document.getElementById('btnTambahMapel').addEventListener('click', () => {
+    openMapelModal('Tambah Mata Pelajaran', 'Simpan');
+});
+
+function openMapelModal(title, buttonText, rowIndex = '', mapelValue = '') {
+    document.getElementById('mapelModalLabel').textContent = title;
+    document.getElementById('saveMapel').textContent = buttonText;
+    document.getElementById('rowIndex').value = rowIndex;
+    document.getElementById('mapelInput').value = mapelValue;
+    const namaGuru = localStorage.getItem('namaGuru') || 'Tidak Diketahui';
+    document.getElementById('namaGuruInput').value = namaGuru;
+    const mapelModal = new bootstrap.Modal(document.getElementById('mapelModal'));
+    mapelModal.show();
+}
+
+
+document.getElementById('saveMapel').addEventListener('click', function () {
+    const id = document.getElementById('rowIndex').value;
+    const mapelName = document.getElementById('mapelInput').value.trim();
+    const namaGuru = document.getElementById('namaGuruInput').value.trim();
+    const saveButton = document.getElementById('saveMapel');
+    if (mapelName === '') {
+        Swal.fire('Oops!', 'Nama pelajaran tidak boleh kosong.', 'error');
+        return;
+    }
+    saveButton.textContent = 'Memproses...';
+    saveButton.disabled = true;
+    if (id) {
+        google.script.run.withSuccessHandler(() => {
+            showSuccessMessage('Data pelajaran berhasil diperbarui.');
+            loadMapel();
+            resetModal();
+        }).updateMapel(id, mapelName, namaGuru);
+    } else {
+        google.script.run.withSuccessHandler(() => {
+            showSuccessMessage('Mata pelajaran berhasil ditambahkan.');
+            loadMapel();
+            resetModal();
+        }).addMapel(mapelName, namaGuru);
+    }
+});
+
+function resetModal() {
+    const mapelModal = bootstrap.Modal.getInstance(document.getElementById('mapelModal'));
+    mapelModal.hide();
+    document.getElementById('mapelInput').value = ''; 
+    document.getElementById('rowIndex').value = ''; 
+    const saveButton = document.getElementById('saveMapel');
+    saveButton.textContent = 'Simpan';
+    saveButton.disabled = false; 
+}
+
+function editMapel(id, mapelName) {
+    openMapelModal('Edit Mata Pelajaran', 'Update', id, mapelName);
+}
+
+function deleteMapel(id) {
+    Swal.fire({
+        title: 'Yakin ingin menghapus data?',
+        showCancelButton: true,
+        confirmButtonText: 'Hapus',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            google.script.run.withSuccessHandler(() => {
+                showSuccessMessage('Mata pelajaran berhasil dihapus.');
+                loadMapel();
+            }).deleteMapel(id);
+        }
+    });
+}
+
+function loadSiswa() {
+  const namaGuru = localStorage.getItem('namaGuru');
+  if (!namaGuru) {
+    Swal.fire('Error', 'Nama guru tidak ditemukan.', 'error');
+    return;
+  }
+  google.script.run.withSuccessHandler(function (data) {
+    const tbody = document.querySelector('#tableSiswa tbody');
+    tbody.innerHTML = '';
+    if (data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6">Tidak ada data siswa.</td></tr>';
+      return;
+    }
+    data.forEach((item, index) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${item.nama}</td>
+        <td>${item.nis}</td>
+        <td>${item.gender}</td>
+        <td>${item.kelas}</td>
+        <td>
+          <button class="btn btn-warning btn-sm" 
+            onclick="showEditSiswa('${item.id}', '${item.nama}', '${item.nis}', '${item.gender}', '${item.kelas}')">
+            <i class="fa fa-pen"></i>
+          </button>
+          <button class="btn btn-danger btn-sm" 
+            onclick="confirmDeleteSiswa('${item.id}')"><i class="fa fa-trash"></i></button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  }).getSiswaByGuru(namaGuru);
+}
+
+function showAddSiswa() {
+    const namaGuru = localStorage.getItem("namaGuru") || "Tidak Diketahui";
+    document.getElementById('addGuruSiswa').value = namaGuru; // Set nama guru di modal
+    const addModal = new bootstrap.Modal(document.getElementById('addModalSiswa'));
+    addModal.show();
+}
+
+document.getElementById('saveAddSiswaBtn').addEventListener('click', function () {
+    const nama = document.getElementById('addNamaSiswa').value.trim();
+    const nis = document.getElementById('addNIS').value.trim();
+    const gender = document.getElementById('addGender').value;
+    const kelas = document.getElementById('addKelas').value.trim();
+    const namaGuru = document.getElementById('addGuruSiswa').value; // Ambil nama guru
+    const saveButton = document.getElementById('saveAddSiswaBtn');
+    if (nama && nis && gender && kelas) {
+        saveButton.innerHTML = 'Menyimpan ...';
+        saveButton.disabled = true;
+        google.script.run.withSuccessHandler(() => {
+            const addModal = bootstrap.Modal.getInstance(document.getElementById('addModalSiswa'));
+            addModal.hide();
+            document.getElementById('addNamaSiswa').value = '';
+            document.getElementById('addNIS').value = '';
+            document.getElementById('addGender').value = '';
+            document.getElementById('addKelas').value = '';
+
+            saveButton.innerHTML = 'Simpan';
+            saveButton.disabled = false;
+
+            Swal.fire({
+                icon: 'success',
+                text: 'Data siswa berhasil ditambahkan.',
+                timer: 3000,
+                showConfirmButton: false
+            });
+
+            loadSiswa();
+        }).addSiswaData(nama, nis, gender, kelas, namaGuru); 
+    } else {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Semua kolom harus diisi!'
+        });
+    }
+});
+
+function showEditSiswa(id, nama, nis, gender, kelas) {
+  document.getElementById('editId').value = id; 
+  document.getElementById('editNamaSiswa').value = nama;
+  document.getElementById('editNIS').value = nis;
+  document.getElementById('editGender').value = gender;
+  document.getElementById('editKelas').value = kelas;
+  const editModal = new bootstrap.Modal(document.getElementById('editModalSiswa'));
+  editModal.show();
+}
+
+document.getElementById('saveEditSiswaBtn').addEventListener('click', function () {
+  const id = document.getElementById('editId').value;
+  const nama = document.getElementById('editNamaSiswa').value.trim();
+  const nis = document.getElementById('editNIS').value.trim();
+  const gender = document.getElementById('editGender').value;
+  const kelas = document.getElementById('editKelas').value.trim();
+  const saveButton = document.getElementById('saveEditSiswaBtn');
+  if (nama && nis && gender && kelas) {
+    saveButton.innerHTML = 'Menyimpan...';
+    saveButton.disabled = true;
+    google.script.run.withSuccessHandler(() => {
+      Swal.fire('Berhasil!', 'Data siswa berhasil diperbarui.', 'success');
+      saveButton.innerHTML = 'Update';
+      saveButton.disabled = false;
+      loadSiswa();
+      bootstrap.Modal.getInstance(document.getElementById('editModalSiswa')).hide();
+    }).updateSiswaById(id, nama, nis, gender, kelas);
+  } else {
+    Swal.fire('Oops...', 'Semua kolom harus diisi!', 'warning');
+  }
+});
+
+function confirmDeleteSiswa(id) { 
+  Swal.fire({
+    title: 'Yakin ingin menghapus data ini?',
+    text: 'Data yang dihapus tidak dapat dikembalikan.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Hapus',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      google.script.run.withSuccessHandler((response) => {
+        if (response === 'Berhasil') {
+          Swal.fire('Dihapus!', 'Data siswa berhasil dihapus.', 'success');
+          loadSiswa();
+        } else {
+          Swal.fire('Gagal!', 'ID tidak ditemukan.', 'error');
+        }
+      }).deleteSiswaById(id);
+    }
+  });
+}
+
+function loadAdministrasi() {
+  const namaGuru = localStorage.getItem("namaGuru");
+  google.script.run.withSuccessHandler(function (data) {
+    const tbody = document.querySelector('#tableAdministrasi tbody');
+    tbody.innerHTML = '';
+    if (data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7">Tidak ada data administrasi.</td></tr>';
+      return;
+    }
+    data.forEach((row, index) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${row[1]}</td> 
+        <td>${row[2]}</td> 
+        <td>${row[3]}</td>
+        <td>
+          <a href="${row[4]}" target="_blank" class="btn btn-sm btn-info">
+            <i class="fa fa-download"></i>
+          </a>
+        </td>
+        <td>${row[5]}</td> 
+        <td>
+          <button class="btn btn-warning btn-sm" onclick="showEditAdministrasi(${row[0]}, '${row[1]}', '${row[2]}', '${row[3]}', '${row[5]}')"><i class="fa fa-pen"></i></button>
+          <button class="btn btn-danger btn-sm" onclick="confirmDeleteAdministrasi(${row[0]})"><i class="fa fa-trash"></i></button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  }).getAdministrasiByGuru(namaGuru);
+}
+
+function showAddAdministrasi() {
+    const namaGuru = localStorage.getItem("namaGuru") || '';
+    document.getElementById('adminRowIndex').value = '';
+    document.getElementById('adminNamaFile').value = '';
+    document.getElementById('adminMapel').value = '';
+    document.getElementById('adminSemester').value = 'Ganjil';
+    document.getElementById('adminFile').value = '';
+    document.getElementById('adminStatus').value = 'Aktif';
+    document.getElementById('adminGuru').value = namaGuru;
+    const adminModal = new bootstrap.Modal(document.getElementById('adminModal'));
+    adminModal.show();
+}
+
+function showEditAdministrasi(id, nama, mapel, semester, status) {
+    document.getElementById('adminRowIndex').value = id; 
+    document.getElementById('adminNamaFile').value = nama;
+    document.getElementById('adminMapel').value = mapel;
+    document.getElementById('adminSemester').value = semester;
+    document.getElementById('adminStatus').value = status; 
+    const adminModal = new bootstrap.Modal(document.getElementById('adminModal'));
+    adminModal.show();
+}
+
+document.getElementById('saveAdminBtn').addEventListener('click', function () {
+    const saveBtn = document.getElementById('saveAdminBtn');
+    const rowIndex = document.getElementById('adminRowIndex').value;
+    const nama = document.getElementById('adminNamaFile').value.trim();
+    const mapel = document.getElementById('adminMapel').value.trim();
+    const semester = document.getElementById('adminSemester').value;
+    const fileInput = document.getElementById('adminFile');
+    const file = fileInput.files[0];
+    const status = document.getElementById('adminStatus').value;
+    const guru = document.getElementById('adminGuru').value;
+
+    if (nama && mapel && semester && status) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = 'Menyimpan...';
+
+        if (file && file.size > 5 * 1024 * 1024) {
+            Swal.fire('Oops...', 'Ukuran file maksimal 5 MB!', 'error');
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = 'Simpan';
+            return;
+        }
+        const resetForm = () => {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = 'Simpan';
+            fileInput.value = ''; 
+            bootstrap.Modal.getInstance(document.getElementById('adminModal')).hide();
+            loadAdministrasi();
+        };
+
+        if (rowIndex) {
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const fileData = {
+                        fileName: file.name,
+                        mimeType: file.type,
+                        bytes: Array.from(new Uint8Array(e.target.result))
+                    };
+                    google.script.run.withSuccessHandler(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Data berhasil diperbarui!',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(resetForm);
+                    }).updateAdministrasiData(rowIndex, nama, mapel, semester, fileData, status, guru);
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                google.script.run.withSuccessHandler(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Data berhasil diperbarui!',
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(resetForm);
+                }).updateAdministrasiData(rowIndex, nama, mapel, semester, null, status, guru);
+            }
+        } else {
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const fileData = {
+                        nama: nama,
+                        mapel: mapel,
+                        semester: semester,
+                        fileName: file.name,
+                        mimeType: file.type,
+                        bytes: Array.from(new Uint8Array(e.target.result)),
+                        status: status,
+                        guru: guru
+                    };
+                    google.script.run.withSuccessHandler(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Data berhasil ditambahkan!',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(resetForm);
+                    }).uploadAdministrasiData(fileData);
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                Swal.fire('Oops...', 'File belum diunggah!', 'warning');
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = 'Simpan';
+            }
+        }
+    } else {
+        Swal.fire('Oops...', 'Semua kolom harus diisi!', 'warning');
+    }
+});
+
+
+function confirmDeleteAdministrasi(id) {
+  Swal.fire({
+    title: 'Yakin ingin menghapus data?',
+    showCancelButton: true,
+    confirmButtonText: 'Hapus',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      google.script.run.withSuccessHandler(() => {
+        Swal.fire('Berhasil!', 'Data telah dihapus.', 'success');
+        loadAdministrasi(); 
+      }).deleteAdministrasiById(id);
+    }
+  });
+}
+
+function loadKontak() {
+    const tableBody = document.querySelector('#kontakTable tbody');
+    tableBody.innerHTML = '<tr><td colspan="6">Memuat data...</td></tr>';
+    google.script.run.withSuccessHandler(function (data) {
+        tableBody.innerHTML = '';
+        if (data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="6">Tidak ada data.</td></tr>';
+            return;
+        }
+        data.forEach((item, index) => {
+            const row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.nama}</td>
+                    <td>${item.subjek}</td>
+                    <td>${item.pesan}</td>
+                    <td>${item.timestamp}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" onclick="deleteKontak(${item.index})"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    }).getKontakData();
+}
+
+function deleteKontak(rowIndex) {
+    Swal.fire({
+            title: 'Yakin ingin menghapus data?',
+            showCancelButton: true,
+            confirmButtonText: 'Hapus',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                google.script.run.withSuccessHandler(() => {
+                    Swal.fire('Dihapus!', 'Data berhasil dihapus.', 'success');
+                    loadKontak(); // Refresh data
+                }).deleteKontakRow(rowIndex);
+            }
+        });
+    }
+</script>
+</body>
+</html>
